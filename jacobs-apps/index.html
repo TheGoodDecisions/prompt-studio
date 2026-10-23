@@ -3,220 +3,161 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#050608">
-  <meta name="description" content="Jacob's Apps — hub personal de herramientas, bots y proyectos.">
+  <meta name="theme-color" content="#030405">
+  <meta name="description" content="Jacob's Apps — tus herramientas favoritas, en un solo lugar.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Jacob's Apps">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand-logo.jpg" type="image/png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <title>Jacob's Apps</title>
+  <title>Jacob’s Apps</title>
 </head>
-<body>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="aurora aurora-a" aria-hidden="true"></div>
-  <div class="aurora aurora-b" aria-hidden="true"></div>
-
-  <header class="shell top-shell">
-    <div class="glass nav-bar">
-      <a class="brand" href="#home" aria-label="Ir al inicio">
-        <span class="brand-chip">J</span>
-        <span>Jacob’s <strong>Apps</strong></span>
-      </a>
-      <nav class="nav-links">
-        <a href="#home" class="is-active">Inicio</a>
-        <a href="#apps">Apps</a>
-        <a href="#about">Sobre mí</a>
-      </nav>
-      <div class="nav-actions">
-        <button class="pill-button" id="installButton" type="button">Instalar</button>
+<body class="pin-locked">
+  <div id="appShell" hidden inert aria-hidden="true">
+    <header class="shell top-shell" id="home">
+      <div class="topbar">
+        <a href="#home" class="brand" aria-label="Inicio de Jacob’s Apps">
+          <img src="brand-logo.jpg" class="brand-image" alt="">
+          <span>Jacob’s <strong>Apps</strong></span>
+        </a>
+        <nav class="nav-links" aria-label="Navegación principal">
+          <a class="active" href="#home">Inicio</a>
+          <a href="#apps">Apps</a>
+          <button type="button" id="manageButton">Gestionar</button>
+        </nav>
+        <div class="nav-actions">
+          <button class="nav-install" id="installButton" type="button">Instalar</button>
+          <button class="nav-lock" id="lockNowButton" type="button" title="Bloquear" aria-label="Bloquear la app">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 1 1 8 0v3"></path></svg>
+          </button>
+        </div>
       </div>
+    </header>
+
+    <main class="shell main-content" id="apps">
+      <h1 class="main-title metal-title">Jacob’s Apps</h1>
+      <div id="appsGrid" class="launcher-grid" aria-label="Biblioteca de aplicaciones"></div>
+      <div id="emptyState" class="empty-state" hidden>Tu biblioteca está vacía. Toca «+» para añadir una app.</div>
+    </main>
+
+    <div class="overlay" id="detailOverlay" hidden>
+      <div class="overlay-backdrop" data-close="detail"></div>
+      <section class="sheet glass" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button class="icon-close" type="button" data-close="detail" aria-label="Cerrar ficha">×</button>
+        <div id="detailContent"></div>
+      </section>
     </div>
-  </header>
 
-  <main id="home">
-    <section class="hero shell">
-      <div class="hero-copy">
-        <div class="eyebrow">PERSONAL TOOL HUB</div>
-        <h1 class="hero-title iridescent-text">Jacob’s Apps</h1>
-        <p class="hero-subtitle">Tus herramientas, bots y pequeños sistemas en un solo lugar. Una home con look futurista para entrar a todo lo que vas creando.</p>
-        <div class="hero-cta-row">
-          <a class="cta primary" href="#apps">Ver apps</a>
-          <button class="cta secondary" id="heroAddButton" type="button">Añadir una app</button>
+    <div class="overlay" id="managerOverlay" hidden>
+      <div class="overlay-backdrop" data-close="manager"></div>
+      <section class="sheet glass manager-sheet" role="dialog" aria-modal="true" aria-labelledby="managerTitle">
+        <button class="icon-close" type="button" data-close="manager" aria-label="Cerrar opciones">×</button>
+        <h2 class="sheet-title" id="managerTitle">Gestionar</h2>
+        <p class="sheet-secondary">Personaliza tu biblioteca.</p>
+        <div class="manager-actions">
+          <button class="manage-action" id="addAppButton" type="button"><span>＋</span> Nueva app</button>
+          <button class="manage-action" id="exportButton" type="button"><span>↗</span> Exportar biblioteca</button>
+          <button class="manage-action" id="importButton" type="button"><span>↘</span> Importar biblioteca</button>
+          <button class="manage-action" id="changePinButton" type="button"><span>⌘</span> Cambiar PIN</button>
+          <input type="file" id="importFile" accept=".json,application/json" hidden>
         </div>
-        <div class="hero-meta">
-          <span>Fondo negro</span>
-          <span>Vidrio iridiscente</span>
-          <span>Instalable como PWA</span>
-        </div>
-      </div>
-      <div class="hero-showcase glass">
-        <div class="showcase-rings" aria-hidden="true"></div>
-        <div class="showcase-grid" id="heroPreview"></div>
-      </div>
-    </section>
-
-    <section class="shell controls-row" id="apps">
-      <div>
-        <div class="eyebrow">APP DIRECTORY</div>
-        <h2 class="section-title">Mis apps</h2>
-      </div>
-      <div class="toolbar glass">
-        <label class="search-field" aria-label="Buscar apps">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
-          <input id="searchInput" type="search" placeholder="Buscar una app..." autocomplete="off">
-        </label>
-        <div class="toolbar-buttons">
-          <button class="mini-button" id="addAppButton" type="button">+ Nueva</button>
-          <button class="mini-button" id="exportButton" type="button">Exportar</button>
-          <button class="mini-button" id="importButton" type="button">Importar</button>
-          <input id="importFile" type="file" accept="application/json,.json" hidden>
-        </div>
-      </div>
-    </section>
-
-    <section class="shell">
-      <div class="apps-grid" id="appsGrid"></div>
-      <div class="empty-state glass" id="emptyState" hidden>
-        <h3>No hay resultados</h3>
-        <p>Prueba otra búsqueda o añade una nueva app.</p>
-      </div>
-    </section>
-
-    <section class="shell about-section" id="about">
-      <div class="glass about-card">
-        <div>
-          <div class="eyebrow">CONCEPTO</div>
-          <h2 class="section-title small">Un escritorio personal de utilidades</h2>
-        </div>
-        <p>Esta versión usa una estética oscura, premium y tecnológica: cristal cromado, reflejos iridiscentes y cards tipo icono de sistema operativo. Cada app puede tener su explicación, pasos de uso y enlace al chat o proyecto real.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="shell footer">
-    <div class="glass footer-card">
-      <span>Jacob’s Apps</span>
-      <small>Diseñado como hub personal instalable.</small>
+        <p class="manager-note">Los enlaces que añadas se guardan únicamente en este navegador. Para pasarlos a otro dispositivo, exporta e importa la biblioteca.</p>
+      </section>
     </div>
-  </footer>
 
-  <div class="overlay" id="detailOverlay" hidden>
-    <div class="overlay-backdrop" data-close="detail"></div>
-    <section class="modal glass detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-      <button class="icon-close" type="button" data-close="detail" aria-label="Cerrar">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
-      <div id="detailContent"></div>
-    </section>
-  </div>
-
-  <div class="overlay" id="editorOverlay" hidden>
-    <div class="overlay-backdrop" data-close="editor"></div>
-    <section class="modal glass editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
-      <button class="icon-close" type="button" data-close="editor" aria-label="Cerrar">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
-      <div class="modal-head">
-        <div class="eyebrow">EDITA TU CATÁLOGO</div>
-        <h2 id="editorTitle" class="section-title small">Nueva app</h2>
-      </div>
-      <form id="appForm" class="app-form">
-        <input type="hidden" id="fieldId">
-        <div class="form-grid">
-          <label>
-            <span>Nombre *</span>
-            <input id="fieldName" maxlength="40" required>
-          </label>
-          <label>
-            <span>Tipo</span>
-            <select id="fieldType">
-              <option>ChatGPT</option>
-              <option>Telegram</option>
-              <option>Web</option>
-              <option>Otro</option>
-            </select>
-          </label>
-          <label class="full">
-            <span>Descripción corta</span>
-            <input id="fieldTagline" maxlength="80" placeholder="Una frase corta para la tarjeta">
-          </label>
-          <label class="full">
-            <span>Descripción completa</span>
-            <textarea id="fieldDescription" rows="4" placeholder="Explica qué hace esta app."></textarea>
-          </label>
-          <label>
-            <span>Icono</span>
-            <select id="fieldIcon">
-              <option value="coins">Monedas</option>
-              <option value="hanger">Percha</option>
-              <option value="spark">Documento + brillo</option>
-              <option value="check">Check</option>
-              <option value="cube">Cubo</option>
-              <option value="bot">Bot</option>
-              <option value="plane">Viajes</option>
-              <option value="chart">Gráfico</option>
-              <option value="app">Apps</option>
-            </select>
-          </label>
-          <label>
-            <span>Enlace</span>
-            <input id="fieldUrl" type="url" placeholder="https://...">
-          </label>
-          <label class="full">
-            <span>Pasos de uso (uno por línea)</span>
-            <textarea id="fieldSteps" rows="4" placeholder="Abre la app&#10;Escribe lo que necesitas&#10;Recibe el resultado"></textarea>
-          </label>
-        </div>
-        <div class="form-actions">
-          <button class="cta secondary" type="button" id="deleteButton" hidden>Eliminar</button>
-          <div class="form-actions-right">
-            <button class="cta secondary" type="button" data-close="editor">Cancelar</button>
-            <button class="cta primary" type="submit">Guardar</button>
+    <div class="overlay" id="editorOverlay" hidden>
+      <div class="overlay-backdrop" data-close="editor"></div>
+      <section class="sheet glass editor-sheet" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+        <button class="icon-close" type="button" data-close="editor" aria-label="Cerrar editor">×</button>
+        <h2 class="sheet-title" id="editorTitle">Nueva app</h2>
+        <form id="appForm" class="app-form">
+          <input type="hidden" id="fieldId">
+          <label class="field"><span>Nombre *</span><input id="fieldName" required maxlength="45" placeholder="Ej. Agente de viajes"></label>
+          <label class="field"><span>Enlace del chat, bot o web</span><input id="fieldUrl" type="url" inputmode="url" placeholder="https://..."></label>
+          <div class="editor-icon-select">
+            <div class="icon-heading">
+              <div class="editor-icon-preview" id="selectedIconPreview"></div>
+              <div class="icon-heading-text">
+                <strong>Icono</strong>
+                <div class="icon-tab-bar" role="group" aria-label="Tipo de icono">
+                  <button type="button" class="icon-tab active" data-mode="symbol" aria-pressed="true">Símbolos</button>
+                  <button type="button" class="icon-tab" data-mode="emoji" aria-pressed="false">Emojis</button>
+                </div>
+              </div>
+            </div>
+            <label class="field emoji-custom" id="customEmojiField" hidden><span>Pega cualquier emoji</span><input id="fieldCustomEmoji" type="text" placeholder="💡" aria-label="Emoji personalizado"></label>
+            <label class="emoji-search" id="iconSearchWrap"><input id="iconSearch" type="search" placeholder="Buscar iconos o emojis..." autocomplete="off" aria-label="Buscar iconos"></label>
+            <div id="iconPalette" class="icon-palette" role="group" aria-label="Elige un icono"></div>
           </div>
-        </div>
-      </form>
-    </section>
+          <label class="field"><span>Tipo de app</span><select id="fieldType"><option>ChatGPT</option><option>Telegram</option><option>Web</option><option>Otro</option></select></label>
+          <label class="field"><span>Descripción corta</span><input id="fieldTagline" maxlength="85" placeholder="¿Para qué sirve?"></label>
+          <label class="field"><span>Descripción completa</span><textarea id="fieldDescription" rows="3" placeholder="Explica cómo te ayuda."></textarea></label>
+          <label class="field"><span>Cómo se usa (un paso por línea)</span><textarea id="fieldSteps" rows="3" placeholder="Abre el enlace&#10;Introduce la información&#10;Obtén el resultado"></textarea></label>
+          <div class="form-actions">
+            <button class="btn btn-danger" type="button" id="deleteButton" hidden>Eliminar</button>
+            <div class="form-actions-right">
+              <button class="btn btn-soft" type="button" data-close="editor">Cancelar</button>
+              <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="overlay" id="installOverlay" hidden>
+      <div class="overlay-backdrop" data-close="install"></div>
+      <section class="sheet glass install-sheet" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+        <button class="icon-close" type="button" data-close="install" aria-label="Cerrar instalación">×</button>
+        <img src="brand-logo.jpg" class="install-logo" alt="">
+        <h2 class="sheet-title" id="installTitle">Instalar Jacob’s Apps</h2>
+        <p class="sheet-secondary">Guárdala en la pantalla de inicio como cualquier otra app.</p>
+        <div id="installInstructions" class="install-copy"></div>
+        <button class="btn btn-primary" type="button" id="nativeInstallButton" hidden>Instalar ahora</button>
+      </section>
+    </div>
   </div>
 
-  <div class="overlay" id="installOverlay" hidden>
-    <div class="overlay-backdrop" data-close="install"></div>
-    <section class="modal glass install-modal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
-      <button class="icon-close" type="button" data-close="install" aria-label="Cerrar">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
-      <div class="eyebrow">PWA READY</div>
-      <h2 id="installTitle" class="section-title small">Instala Jacob’s Apps</h2>
-      <p>Puedes añadirla al escritorio o a la pantalla de inicio para sentirla como una app real.</p>
-      <div id="installInstructions" class="install-copy"></div>
-      <button class="cta primary" id="nativeInstallButton" type="button" hidden>Instalar ahora</button>
-    </section>
-  </div>
+  <section class="lock-screen" id="lockScreen" role="dialog" aria-modal="true" aria-labelledby="pinTitle" data-stage="setup">
+    <div class="pin-halo pin-halo-left" aria-hidden="true"></div>
+    <div class="pin-halo pin-halo-right" aria-hidden="true"></div>
+    <div class="pin-top-brand" aria-hidden="true"><img src="brand-logo.jpg" alt="" class="pin-brand-picture"> Jacob’s Apps</div>
+    <div class="pin-panel glass">
+      <div class="pin-panel-shine" aria-hidden="true"></div>
+      <div class="pin-lock-art" aria-hidden="true"><img src="brand-logo.jpg" class="pin-lock-picture" alt=""></div>
+      <div class="pin-overline" id="pinKicker">ACCESO PRIVADO</div>
+      <h1 class="pin-heading iridescent-text" id="pinTitle">Jacob’s Apps</h1>
+      <p class="pin-description" id="pinSubtitle">Introduce el código para entrar.</p>
+      <div class="pin-dots" id="pinDots" role="status" aria-label="0 de 6 dígitos introducidos">
+        <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+      </div>
+      <p class="pin-status" id="pinStatus" aria-live="polite" role="status"></p>
+      <div class="pin-keypad" id="pinKeypad" role="group" aria-label="Teclado numérico para introducir el PIN">
+        <button type="button" data-key="1">1</button>
+        <button type="button" data-key="2">2</button>
+        <button type="button" data-key="3">3</button>
+        <button type="button" data-key="4">4</button>
+        <button type="button" data-key="5">5</button>
+        <button type="button" data-key="6">6</button>
+        <button type="button" data-key="7">7</button>
+        <button type="button" data-key="8">8</button>
+        <button type="button" data-key="9">9</button>
+        <div class="pin-key-empty" aria-hidden="true"></div>
+        <button type="button" data-key="0">0</button>
+        <button type="button" data-key="erase" aria-label="Borrar último dígito" class="pin-erase"><svg viewBox="0 0 24 24"><path d="M9 6H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9L2 12l7-6Z"></path><path d="m13 10 4 4m0-4-4 4"></path></svg></button>
+      </div>
+      <button type="button" id="pinCancel" class="pin-cancel" hidden>Cancelar cambio de PIN</button>
+      <p id="pinFooterHint" class="pin-footnote">Tu PIN no se publica ni se envía a un servidor.</p>
+    </div>
+    <p class="pin-page-footer">PERSONAL SPACE <span aria-hidden="true">✧</span> PRIVATE INTERFACE</p>
+  </section>
 
-  <template id="cardTemplate">
-    <article class="app-card glass">
-      <button class="favorite-button" type="button" aria-label="Marcar favorita">★</button>
-      <div class="app-icon-shell">
-        <div class="app-icon"></div>
-      </div>
-      <div class="card-copy">
-        <p class="app-type"></p>
-        <h3 class="app-name"></h3>
-        <p class="app-tagline"></p>
-      </div>
-      <div class="card-footer">
-        <button class="arrow-button" type="button" aria-label="Ver detalle">
-          <svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>
-        </button>
-      </div>
-    </article>
-  </template>
 
+  <script src="pin-lock.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
