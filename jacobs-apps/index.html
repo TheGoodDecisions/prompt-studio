@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050608">
+  <meta name="description" content="Jacob's Apps — hub personal de herramientas, bots y proyectos.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Jacob's Apps">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <title>Jacob's Apps</title>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="aurora aurora-a" aria-hidden="true"></div>
+  <div class="aurora aurora-b" aria-hidden="true"></div>
+
+  <header class="shell top-shell">
+    <div class="glass nav-bar">
+      <a class="brand" href="#home" aria-label="Ir al inicio">
+        <span class="brand-chip">J</span>
+        <span>Jacob’s <strong>Apps</strong></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#home" class="is-active">Inicio</a>
+        <a href="#apps">Apps</a>
+        <a href="#about">Sobre mí</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="pill-button" id="installButton" type="button">Instalar</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="eyebrow">PERSONAL TOOL HUB</div>
+        <h1 class="hero-title iridescent-text">Jacob’s Apps</h1>
+        <p class="hero-subtitle">Tus herramientas, bots y pequeños sistemas en un solo lugar. Una home con look futurista para entrar a todo lo que vas creando.</p>
+        <div class="hero-cta-row">
+          <a class="cta primary" href="#apps">Ver apps</a>
+          <button class="cta secondary" id="heroAddButton" type="button">Añadir una app</button>
+        </div>
+        <div class="hero-meta">
+          <span>Fondo negro</span>
+          <span>Vidrio iridiscente</span>
+          <span>Instalable como PWA</span>
+        </div>
+      </div>
+      <div class="hero-showcase glass">
+        <div class="showcase-rings" aria-hidden="true"></div>
+        <div class="showcase-grid" id="heroPreview"></div>
+      </div>
+    </section>
+
+    <section class="shell controls-row" id="apps">
+      <div>
+        <div class="eyebrow">APP DIRECTORY</div>
+        <h2 class="section-title">Mis apps</h2>
+      </div>
+      <div class="toolbar glass">
+        <label class="search-field" aria-label="Buscar apps">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="searchInput" type="search" placeholder="Buscar una app..." autocomplete="off">
+        </label>
+        <div class="toolbar-buttons">
+          <button class="mini-button" id="addAppButton" type="button">+ Nueva</button>
+          <button class="mini-button" id="exportButton" type="button">Exportar</button>
+          <button class="mini-button" id="importButton" type="button">Importar</button>
+          <input id="importFile" type="file" accept="application/json,.json" hidden>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="apps-grid" id="appsGrid"></div>
+      <div class="empty-state glass" id="emptyState" hidden>
+        <h3>No hay resultados</h3>
+        <p>Prueba otra búsqueda o añade una nueva app.</p>
+      </div>
+    </section>
+
+    <section class="shell about-section" id="about">
+      <div class="glass about-card">
+        <div>
+          <div class="eyebrow">CONCEPTO</div>
+          <h2 class="section-title small">Un escritorio personal de utilidades</h2>
+        </div>
+        <p>Esta versión usa una estética oscura, premium y tecnológica: cristal cromado, reflejos iridiscentes y cards tipo icono de sistema operativo. Cada app puede tener su explicación, pasos de uso y enlace al chat o proyecto real.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <div class="glass footer-card">
+      <span>Jacob’s Apps</span>
+      <small>Diseñado como hub personal instalable.</small>
+    </div>
+  </footer>
+
+  <div class="overlay" id="detailOverlay" hidden>
+    <div class="overlay-backdrop" data-close="detail"></div>
+    <section class="modal glass detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <button class="icon-close" type="button" data-close="detail" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <div id="detailContent"></div>
+    </section>
+  </div>
+
+  <div class="overlay" id="editorOverlay" hidden>
+    <div class="overlay-backdrop" data-close="editor"></div>
+    <section class="modal glass editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <button class="icon-close" type="button" data-close="editor" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <div class="modal-head">
+        <div class="eyebrow">EDITA TU CATÁLOGO</div>
+        <h2 id="editorTitle" class="section-title small">Nueva app</h2>
+      </div>
+      <form id="appForm" class="app-form">
+        <input type="hidden" id="fieldId">
+        <div class="form-grid">
+          <label>
+            <span>Nombre *</span>
+            <input id="fieldName" maxlength="40" required>
+          </label>
+          <label>
+            <span>Tipo</span>
+            <select id="fieldType">
+              <option>ChatGPT</option>
+              <option>Telegram</option>
+              <option>Web</option>
+              <option>Otro</option>
+            </select>
+          </label>
+          <label class="full">
+            <span>Descripción corta</span>
+            <input id="fieldTagline" maxlength="80" placeholder="Una frase corta para la tarjeta">
+          </label>
+          <label class="full">
+            <span>Descripción completa</span>
+            <textarea id="fieldDescription" rows="4" placeholder="Explica qué hace esta app."></textarea>
+          </label>
+          <label>
+            <span>Icono</span>
+            <select id="fieldIcon">
+              <option value="coins">Monedas</option>
+              <option value="hanger">Percha</option>
+              <option value="spark">Documento + brillo</option>
+              <option value="check">Check</option>
+              <option value="cube">Cubo</option>
+              <option value="bot">Bot</option>
+              <option value="plane">Viajes</option>
+              <option value="chart">Gráfico</option>
+              <option value="app">Apps</option>
+            </select>
+          </label>
+          <label>
+            <span>Enlace</span>
+            <input id="fieldUrl" type="url" placeholder="https://...">
+          </label>
+          <label class="full">
+            <span>Pasos de uso (uno por línea)</span>
+            <textarea id="fieldSteps" rows="4" placeholder="Abre la app&#10;Escribe lo que necesitas&#10;Recibe el resultado"></textarea>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button class="cta secondary" type="button" id="deleteButton" hidden>Eliminar</button>
+          <div class="form-actions-right">
+            <button class="cta secondary" type="button" data-close="editor">Cancelar</button>
+            <button class="cta primary" type="submit">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="overlay" id="installOverlay" hidden>
+    <div class="overlay-backdrop" data-close="install"></div>
+    <section class="modal glass install-modal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+      <button class="icon-close" type="button" data-close="install" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+      <div class="eyebrow">PWA READY</div>
+      <h2 id="installTitle" class="section-title small">Instala Jacob’s Apps</h2>
+      <p>Puedes añadirla al escritorio o a la pantalla de inicio para sentirla como una app real.</p>
+      <div id="installInstructions" class="install-copy"></div>
+      <button class="cta primary" id="nativeInstallButton" type="button" hidden>Instalar ahora</button>
+    </section>
+  </div>
+
+  <template id="cardTemplate">
+    <article class="app-card glass">
+      <button class="favorite-button" type="button" aria-label="Marcar favorita">★</button>
+      <div class="app-icon-shell">
+        <div class="app-icon"></div>
+      </div>
+      <div class="card-copy">
+        <p class="app-type"></p>
+        <h3 class="app-name"></h3>
+        <p class="app-tagline"></p>
+      </div>
+      <div class="card-footer">
+        <button class="arrow-button" type="button" aria-label="Ver detalle">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>
+        </button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
